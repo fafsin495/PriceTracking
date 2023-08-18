@@ -3,7 +3,7 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from datetime import datetime
 
 dateTime =str(datetime.now().strftime('%Y-%m-%d'))
-
+#Bu kod ürünlere ve kateogirilere ait enflasyon bilgisini sql viewına dönüştürür
 
 with DAG('CreateDailyVIEW',start_date = datetime(2022,1,1),
     schedule_interval='30 18 * * *',catchup=False,tags=["cimri"])as dag:
