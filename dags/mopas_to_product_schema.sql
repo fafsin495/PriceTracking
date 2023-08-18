@@ -1,1 +1,0 @@
-UPDATE product3 SET product_price  = 825.0  , product_url='https://www.trendyol.com/sr?q=Komili%20Riviera%20Zeytinya%C4%9F%C4%B1%205%20lt&qt=Komili%20Riviera%20Zeytinya%C4%9F%C4%B1%205%20lt&st=Komili%20Riviera%20Zeytinya%C4%9F%C4%B1%205%20lt&os=1' WHERE product_id='573' and product_date ='2023-08-15' ;
