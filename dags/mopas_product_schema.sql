@@ -1,1 +1,0 @@
-insert into productMopas (product_title_m,product_price_m,product_date_m,product_id_m,product_url_m) values ('Riviera Zeytinyağı 5 lt' ,825.0,'2023-08-15','https://www.trendyol.com/sr?q=Komili%20Riviera%20Zeytinya%C4%9F%C4%B1%205%20lt&qt=Komili%20Riviera%20Zeytinya%C4%9F%C4%B1%205%20lt&st=Komili%20Riviera%20Zeytinya%C4%9F%C4%B1%205%20lt&os=1','573');
