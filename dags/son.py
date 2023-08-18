@@ -98,6 +98,8 @@ def get_link(**kwargs):
             time.sleep(1)
             continue
     return json_result
+
+    
 # bu metot içerisinde ilgili json verilerin içerisinde ihtiyacımıza yönelik olan kısımları alınıp bir dataframe'e kaydedilir
 def parse_json(**kwargs):
     
@@ -111,40 +113,30 @@ def parse_json(**kwargs):
     p_category =[]
     p_id = []
     p_url =[]
-    # current_time = str(datetime.now().strftime("%Y-%m-%d")) 
-    # current_time = "2023-08-03"
-    # baslangic = "2023-08-15"
-    # bitis = "2023-08-15"
-    current_time = datetime.strptime(baslangic, "%Y-%m-%d")
-    fark = int(bitis.split('-')[2])-int(baslangic.split('-')[2]) 
-    for i in range(fark+1):
-        sayac =0
-        for den1 in v1:
-            sayac=sayac+1
-            try:
-                # minPrice.append(float([i['minPrice'] for i in den1['props']['pageProps']['data']['priceHistory'] if i['date'].split('T')[0] == current_time ][0]))
-                p_title.append(den1['query']['data']['data']['product']["product"]['title'])
-                p_category.append(den1['query']['data']['data']['product']["product"]["categorySummary"]['name'])
-                p_id.append(den1['query']['data']['data']['product']["product"]['id'])
-                p_url.append("https://www.cimri.com/"+den1['query']['data']['data']['product']["product"]["path"])
-                strdate = str(current_time.strftime("%Y-%m-%d"))
-                date.append(strdate)
-                if(len(den1['query']['data']['data']['priceHistory']["success"])!= 0):
-                    for i in  den1['query']['data']['data']['priceHistory']["success"]:
-                        if i['date'].split('T')[0] == strdate:
-                            minPrice.append(i['minPrice'])
-                            break
-                        else:
-                            minPrice.append(den1['query']['data']['data']['priceHistory']["success"][0]['minPrice'])
-                            break
-                else:
-                    minPrice.append(0)
-            except Exception as e:
-                print(e)
-                logging.info(" --HATA ALDI-- " + str(e.__class__) )
-                logging.info(" --HATA ALDI-- " + str(sayac) )
-                print (sayac)
-        current_time = current_time + timedelta(days=1)
+    current_time = str(datetime.now().strftime("%Y-%m-%d")) 
+
+    for den1 in v1:
+        try:
+            # minPrice.append(float([i['minPrice'] for i in den1['props']['pageProps']['data']['priceHistory'] if i['date'].split('T')[0] == current_time ][0]))
+            p_title.append(den1['query']['data']['data']['product']["product"]['title'])
+            p_category.append(den1['query']['data']['data']['product']["product"]["categorySummary"]['name'])
+            p_id.append(den1['query']['data']['data']['product']["product"]['id'])
+            p_url.append("https://www.cimri.com/"+den1['query']['data']['data']['product']["product"]["path"])
+            strdate = str(current_time.strftime("%Y-%m-%d"))
+            date.append(strdate)
+            if(len(den1['query']['data']['data']['priceHistory']["success"])!= 0):
+                for i in  den1['query']['data']['data']['priceHistory']["success"]:
+                    if i['date'].split('T')[0] == strdate:
+                        minPrice.append(i['minPrice'])
+                        break
+                    else:
+                        minPrice.append(den1['query']['data']['data']['priceHistory']["success"][0]['minPrice'])
+                        break
+            else:
+                minPrice.append(0)
+        except Exception as e:
+            print(e)
+            logging.info(" --HATA ALDI-- " + str(e.__class__) )
         
     df = pd.DataFrame(
         {
@@ -157,8 +149,6 @@ def parse_json(**kwargs):
         }
     )
     result = df.to_json(orient='columns',force_ascii=False)
-    print ("PRİNTDENEME=>"+ p_title[10])
-    
     return result
 
 # kaydedilen dataframedeki verileri ilgili sql scriptine yazdırılma işlemini gerçekleştirir
@@ -183,19 +173,17 @@ def prepare_query(**kwargs):
             with open('/opt/airflow/dags/sql/product_schema.sql', 'a', encoding='utf-8') as forex_currencies:
                 forex_currencies.write("insert into product3 (product_title,product_category,product_price,product_date,product_id,product_url) values ('%s' , '%s' ,%s,'%s','%s','%s');\n" % (title, category, price, date, product_id, product_link))
 
-            logging.info("INSERLER yazıldı")
+            logging.info("INSERTLER yazıldı")
             forex_currencies.close()
             logging.info("SQL KAPATILDI")
     except Exception  as e :
         logging.info(" --HATA ALDI-- " + str(e.__class__) )
         logging.info(" --HATA ALDI-- " + str(e.args) )
-        logging.info(" --HATA ALDI2-- " + str(e))
         
 
 
 with DAG('son' ,start_date = datetime(2022,9,24),
     schedule_interval='0 18 * * *',
-    # schedule_interval='@daily',
     catchup=False,tags=["cimri"]) as dag:
     opp_request = PythonOperator(task_id ='get_link',python_callable=get_link,provide_context=True)
     opp_parse_json = PythonOperator(task_id = 'parse_json',python_callable=parse_json,provide_context=True)

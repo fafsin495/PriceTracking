@@ -3,7 +3,6 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from datetime import datetime
 
 dateTime =str(datetime.now().strftime('%Y-%m-%d'))
-# dateTime = "2023-04-25"
 
 
 with DAG('CreateDailyVIEW',start_date = datetime(2022,1,1),

@@ -13,7 +13,8 @@ import urllib
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-# from airflow.operators.email import EmailOperator
+
+current_time = str(datetime.now().strftime("%Y-%m-%d")) 
 
 
 # bu metot içerisinde verilen linklere request sorgusu atılıp sorgu sonucu alınan verileri json formatında kaydeder.
@@ -43,13 +44,6 @@ def mopas_get_transform_insert_data(**kwargs):
     minPrice=[]
     date = []
     p_title = []
-    # current_time = str(datetime.now().strftime("%Y-%m-%d")) 
-    # current_time = "2023-08-15"
-    
-
-
-
-
     p_id = []
     p_url =[]
     product_ids=["52148",
@@ -134,12 +128,6 @@ def trendyol_get_transform_insert_data(**kwargs):
     minPrice=[]
     date = []
     p_title = []
-    # current_time = str(datetime.now().strftime("%Y-%m-%d")) 
-    # current_time = "2023-08-15"
-
-
-
-
     p_id = []
     p_url =[]
     product_ids =["573"]
@@ -172,7 +160,6 @@ def trendyol_get_transform_insert_data(**kwargs):
 
 with DAG('mopas_Urun' ,start_date = datetime(2022,9,24),
     schedule_interval='15 18 * * *',
-    # schedule_interval='@daily',
     catchup=False,tags=["cimri"]) as dag:
     opp_mopas_all = PythonOperator(task_id ='mopas_get_transform_insert_data',python_callable=mopas_get_transform_insert_data,provide_context=True)
     opp_trendyol_all = PythonOperator(task_id ='trendyol_get_transform_insert_data',python_callable=trendyol_get_transform_insert_data,provide_context=True)
@@ -198,12 +185,5 @@ with DAG('mopas_Urun' ,start_date = datetime(2022,9,24),
         postgres_conn_id = 'cimri_db',
         sql='updateQuery.sql'
     )
-
-    # send_email = EmailOperator( 
-    #     task_id='emailoperator_demo', 
-    #     to='afsinfatih21@gmail.com', 
-    #     subject='Mopas Web Scraping Succesful', 
-    #     html_content="Date: OLDu", 
-    # )
 
 opp_mopas_all >> opp_insert_db>>opp_update_product3_db>>opp_trendyol_all>>opp_trendyol>>opp_update_db
