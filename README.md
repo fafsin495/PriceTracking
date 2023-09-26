@@ -4,7 +4,7 @@ Bu proje, gıda fiyatlarının değişimini izlemek için tasarlanmıştır. Air
 
 ## Projenin Amacı
 
-Gıda fiyatlarının zaman içindeki değişimini gözlemlemek ve bu değişimin nedenlerini anlamak.
+Gıda fiyatlarının zaman içindeki değişimini gözlemlemek.
 
 ## Projenin Kapsamı
 
