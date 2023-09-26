@@ -27,7 +27,7 @@ Gıda fiyatlarının zaman içindeki değişimini gözlemlemek.
 
 ## Projenin Kullanımı
 
-Proje, arka planda sürekli olarak çalışmaktadır. Veriler, her gün saat 00:00'da PostgreSQL veritabanına kaydedilir.
+Proje, arka planda sürekli olarak çalışmaktadır. Veriler, her gün saat airflow dagları üzerinde belirtilen saatlerde PostgreSQL veritabanına kaydedilir.
 
 ## Veriler
 
